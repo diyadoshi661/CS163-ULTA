@@ -3,6 +3,15 @@ import dash
 
 app = Dash(__name__, use_pages=True)
 
+# Define custom page order
+custom_order = [
+    "Home Page",
+    "Project Proposal",
+    "Major Findings",
+    "Analytical Methods",
+    "Project Objective"
+]
+
 # Splash screen layout
 def splash_screen():
     return html.Div(
@@ -20,25 +29,28 @@ def splash_screen():
             "align-items": "center",
             "color": "white",
             "text-shadow": "1px 1px 6px rgba(0,0,0,0.8)",
-            "text-align": "center"
+            "text-align": "center",
+            "font-family": "Comic Sans MS, cursive, sans-serif"
         },
         children=[
             html.H1("Fleure Beauty's", style={"font-size": "4rem", "margin": "0.2em"}),
             html.H2("Sunkissed Collection", style={"font-size": "2.5rem", "margin": "0.1em"}),
-            # ⏱️ Changed from 30s to 7s
             dcc.Interval(id="splash-timer", interval=3_000, n_intervals=0)
         ]
     )
 
-# Main app layout (no image, just title, nav, and pages)
+# Main app layout
 def full_layout():
+    sorted_pages = sorted(dash.page_registry.values(), key=lambda p: custom_order.index(p['name']) if p['name'] in custom_order else 99)
     return html.Div([
-        html.H1("Ulta Skincare Review Dashboard", style={"textAlign": "center"}),
+        html.H1("Ulta Skincare Review Dashboard", style={"textAlign": "center", "font-family": "Comic Sans MS, cursive, sans-serif"}),
         html.Hr(),
         html.Div([
-            dcc.Link(f"{page['name']} | ", href=page["relative_path"])
-            for page in dash.page_registry.values()
-        ], style={"textAlign": "center"}),
+            html.Span([
+                dcc.Link(f"{page['name']} ", href=page["relative_path"], style={"padding": "0 10px", "text-decoration": "none", "color": "#444", "font-family": "Comic Sans MS, cursive, sans-serif"}),
+                html.Span("|", style={"color": "#bbb"})
+            ]) for page in sorted_pages
+        ], style={"textAlign": "center", "font-size": "1.1rem"}),
         html.Hr(),
         dash.page_container
     ])
