@@ -1,48 +1,94 @@
 import dash
 from dash import html
 
+# Register the page
 dash.register_page(__name__, path='/proposal', name='Project Proposal')
 
 layout = html.Div(
-    style={
-        'position': 'relative',
-        'minHeight': '100vh',
-        'backgroundImage': "url('/assets/background.png')",
-        'backgroundSize': 'cover',
-        'backgroundPosition': 'center',
-        'backgroundRepeat': 'no-repeat',
-        'backgroundColor': 'rgba(255, 255, 255, 0.5)',  # White overlay for transparency
-        'backgroundBlendMode': 'overlay',
-        'padding': '2rem',
-        'fontFamily': "'Comic Sans MS', cursive, sans-serif"
-    },
+    style={"backgroundColor": "#FFF9F4", "padding": "30px"},
     children=[
-        html.H1("Project Proposal", style={'textAlign': 'center', 'color': '#222'}),
-        html.H2("Project Summary", style={'color': '#B22222'}),
-        html.P("""
-        With an emphasis on spotting possible biases, fake reviews, and the impact of marketing tactics like influencer promotions 
-        and exclusivity, this project seeks to assess the dependability and credibility of consumer evaluations on Ulta's platform...
-        """, style={'color': '#333'}),
+        # Header
+        html.Div(
+            style={
+                "backgroundColor": "#bfa2db",
+                "padding": "20px",
+                "textAlign": "center",
+                "borderRadius": "10px",
+                "marginBottom": "30px"
+            },
+            children=[
+                html.H1("Project Proposal", style={"color": "white", "fontFamily": "Georgia, serif"})
+            ]
+        ),
 
-        html.H2("Broader Impacts", style={'color': '#228B22'}),
-        html.Ul([
-            html.Li("Increased Transparency and Trust"),
-            html.Li("Ethical Marketing Practices"),
-            html.Li("Consumer Empowerment"),
-        ], style={'color': '#444'}),
+        # Project Summary
+        html.Div([
+            html.H2("Project Summary", style={"color": "#4b0082", "fontFamily": "Georgia, serif"}),
+            html.P("""
+                This project analyzes Ulta Beauty product reviews to uncover insights through sentiment analysis, bias detection,
+                pricing strategy shifts, and explainable machine learning. By combining NLP, visual analytics, and predictive modeling,
+                we aim to support more transparent product evaluation and smarter retail decisions.
+            """, style={"fontSize": "18px", "color": "#333", "marginTop": "10px"})
+        ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "10px", "marginBottom": "20px"}),
 
-        html.H2("Data Sources", style={'color': '#4169E1'}),
-        html.Ul([
-            html.Li(" Ulta Website"),
-            html.Li("Google Trends API"),
-            html.Li("Allure Beauty Blog"),
-        ], style={'color': '#444'}),
+        html.Hr(style={"borderTop": "2px solid #bfa2db"}),
 
-        html.H2("Expected Major Findings", style={'color': '#8B008B'}),
-        html.Ul([
-            html.Li(" Seasonal Influence on Reviews"),
-            html.Li(" Marketing & Review Bias"),
-            html.Li("Sentiment Analysis"),
-        ], style={'color': '#444'}),
+        # Data Sources
+        html.Div([
+            html.H2("Data Sources", style={"color": "#4b0082", "fontFamily": "Georgia, serif"}),
+            html.Ul([
+                html.Li("Ulta Website Scraping (Product Listings + Reviews)", style={"marginBottom": "8px"}),
+                html.Li("Google Trends API (Consumer interest over time)", style={"marginBottom": "8px"}),
+                html.Li("Allure Beauty Blog Articles (Industry Insights)")
+            ], style={"fontSize": "18px", "color": "#333"})
+        ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "10px", "marginBottom": "20px"}),
+
+        html.Hr(style={"borderTop": "2px solid #bfa2db"}),
+
+        # Expected Major Findings
+        html.Div([
+            html.H2("Expected Major Findings", style={"color": "#4b0082", "fontFamily": "Georgia, serif"}),
+            html.Ul([
+                html.Li("Sentiment, bias, and sales patterns across Dermalogica reviews", style={"marginBottom": "8px"}),
+                html.Li("Category pricing dynamics: HOT vs COLD categories", style={"marginBottom": "8px"}),
+                html.Li("Explainable ML model for star rating prediction using SHAP")
+            ], style={"fontSize": "18px", "color": "#333"})
+        ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "10px", "marginBottom": "20px"}),
+
+        html.Hr(style={"borderTop": "2px solid #bfa2db"}),
+
+        # Preprocessing Steps
+        html.Div([
+            html.H2("Preprocessing Steps", style={"color": "#4b0082", "fontFamily": "Georgia, serif"}),
+            html.Ul([
+                html.Li("Data Collection and Cleaning", style={"marginBottom": "8px"}),
+                html.Li("Scaling and Normalization", style={"marginBottom": "8px"}),
+                html.Li("Feature Engineering and Selection")
+            ], style={"fontSize": "18px", "color": "#333"})
+        ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "10px", "marginBottom": "20px"}),
+
+        html.Hr(style={"borderTop": "2px solid #bfa2db"}),
+
+        # Data Analysis and Algorithms
+        html.Div([
+            html.H2("Data Analysis and Algorithms", style={"color": "#4b0082", "fontFamily": "Georgia, serif"}),
+            html.Ul([
+                html.Li("Sentiment and Subjectivity Scoring", style={"marginBottom": "8px"}),
+                html.Li("Cluster Analysis for Bias Detection", style={"marginBottom": "8px"}),
+                html.Li("XGBoost Modeling and SHAP Analysis")
+            ], style={"fontSize": "18px", "color": "#333"})
+        ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "10px", "marginBottom": "20px"}),
+
+        html.Hr(style={"borderTop": "2px solid #bfa2db"}),
+
+        # Data Visualization Plan
+        html.Div([
+            html.H2("Data Visualization Plan", style={"color": "#4b0082", "fontFamily": "Georgia, serif"}),
+            html.Ul([
+                html.Li("Violin plots for price and rating distributions", style={"marginBottom": "8px"}),
+                html.Li("Radar charts for review behavior clustering", style={"marginBottom": "8px"}),
+                html.Li("SHAP summary plots for explainability")
+            ], style={"fontSize": "18px", "color": "#333"})
+        ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "10px", "marginBottom": "40px"}),
     ]
 )

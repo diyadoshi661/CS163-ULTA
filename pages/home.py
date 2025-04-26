@@ -3,24 +3,23 @@ from dash import html, dcc
 import pandas as pd
 import plotly.express as px
 
-dash.register_page(__name__, path='/', name='Home Page')
-# Load example datasets (replace with your actual DataFrame loading logic)
+dash.register_page(__name__, path='/', name='Home')
+
+# Load datasets
 df_old = pd.read_csv('cleaned_makeup_products.csv')
 df_new = pd.read_csv('face_df.csv')
 
-# Data Preprocessing for Visualization
+# Data Preprocessing
 old_top_brands = df_old['brand'].value_counts().nlargest(10).reset_index()
 old_top_brands.columns = ['Brand', 'Product Count']
 new_top_brands = df_new['Brand'].value_counts().nlargest(10).reset_index()
 new_top_brands.columns = ['Brand', 'Product Count']
 
-# Average price comparison
 price_comparison = pd.DataFrame({
     'Dataset': ['Old', 'New'],
     'Average Price': [df_old['price'].mean(), df_new['Price'].mean()]
 })
 
-# Average review comparison
 review_comparison = pd.DataFrame({
     'Dataset': ['Old', 'New'],
     'Average Reviews': [df_old['num_reviews'].mean(), df_new['Reviews'].mean()]
@@ -33,37 +32,20 @@ fig_price = px.bar(price_comparison, x='Dataset', y='Average Price', title='Aver
 fig_reviews = px.bar(review_comparison, x='Dataset', y='Average Reviews', title='Average Review Count Comparison')
 
 fig_violin_price = px.violin(
-    df_new, 
-    x="Category", 
-    y="Price", 
-    box=True, 
-    points="all", 
-    color="Category", 
-    title="Price Distribution Across Categories"
+    df_new, x="Category", y="Price", box=True, points="all", color="Category", title="Price Distribution Across Categories"
 )
 fig_violin_price.update_layout(
-    xaxis_title="Category",
-    yaxis_title="Price ($)",
-    xaxis_tickangle=45,
-    showlegend=False
+    xaxis_title="Category", yaxis_title="Price ($)", xaxis_tickangle=45, showlegend=False
 )
 
 fig_violin_stars = px.violin(
-    df_new, 
-    x="Category", 
-    y="Weighted_Rating", 
-    box=True, 
-    points="all", 
-    color="Category", 
-    title="Weighted Rating Distribution Across Categories"
+    df_new, x="Category", y="Weighted_Rating", box=True, points="all", color="Category", title="Weighted Rating Distribution Across Categories"
 )
 fig_violin_stars.update_layout(
-    xaxis_title="Category",
-    yaxis_title="Weighted Rating",
-    xaxis_tickangle=45,
-    showlegend=False
+    xaxis_title="Category", yaxis_title="Weighted Rating", xaxis_tickangle=45, showlegend=False
 )
-# Dash Layout
+
+# Layout
 layout = html.Div(
     style={"backgroundColor": "#FFF9F4"},
     children=[
@@ -84,39 +66,54 @@ layout = html.Div(
                 "font-family": "Georgia, serif"
             },
             children=[
-                html.H1("Ulta Beauty", style={
-                    "font-size": "4rem",
-                    "font-weight": "bold",
-                    "margin": "0"
-                }),
-                html.H2("Data Analysis", style={
-                    "font-size": "2rem",
-                    "font-weight": "normal",
-                    "margin-top": "0.3rem"
-                }),
+                html.H1("Ulta Beauty", style={"font-size": "4rem", "font-weight": "bold", "margin": "0"}),
+                html.H2("Data Analysis", style={"font-size": "2rem", "font-weight": "normal", "margin-top": "0.3rem"}),
             ]
         ),
+
+        # Pretty Project Summary
         html.Div(
+            style={
+                "backgroundColor": "#FFF9F4",
+                "padding": "30px 60px",
+                "textAlign": "center",
+                "fontFamily": "Georgia, serif",
+                "color": "#444",
+                "fontSize": "1.5rem",
+                "lineHeight": "2",
+                "maxWidth": "80%",
+                "margin": "20px auto"
+            },
             children=[
-                html.P(
-                    "This project analyzes Ulta Beauty product reviews to uncover insights through sentiment analysis, "
-                    "bias detection, pricing strategy shifts, and explainable machine learning. "
-                    "By combining NLP, visual analytics, and predictive modeling, we aim to support more transparent "
-                    "product evaluation and smarter retail decisions.",
-                    style={
-                        "maxWidth": "80%",
-                        "margin": "30px auto 10px auto",
-                        "textAlign": "center",
-                        "fontSize": "1.1rem",
-                        "color": "#333",
-                        "font-family": "Georgia, serif"
-                    }
-                )
+                html.P([
+                    "This project analyzes ",
+                    html.Span("Ulta Beauty", style={"fontWeight": "bold"}),
+                    " product reviews to uncover insights through ",
+                    html.Span("sentiment analysis,", style={"fontStyle": "italic"}),
+                    " ",
+                    html.Span("bias detection,", style={"fontStyle": "italic"}),
+                    " pricing strategy shifts, and ",
+                    html.Span("explainable machine learning.", style={"fontStyle": "italic"}),
+                    " By combining ",
+                    html.Span("NLP,", style={"fontStyle": "italic"}),
+                    " visual analytics, and predictive modeling, we aim to support more transparent product evaluation and smarter retail decisions."
+                ])
             ]
         ),
+
         # Visualization section
         html.Div([
-            html.H3("Insights Dashboard", style={"textAlign": "center", "marginTop": "40px"}),
+            html.H3(
+                "Insights Dashboard", 
+            style={
+                "textAlign": "center", 
+                "marginTop": "40px", 
+                "fontSize": "2.5rem",
+                "fontWeight": "bold",
+                "color": "#333",
+                "font-family": "Georgia, serif"
+    }
+),
 
             html.Div([
                 html.Div([dcc.Graph(figure=fig_top_old)], style={"width": "48%", "display": "inline-block", "padding": "1%"}),
@@ -128,7 +125,7 @@ layout = html.Div(
                 html.Div([dcc.Graph(figure=fig_reviews)], style={"width": "48%", "display": "inline-block", "padding": "1%"})
             ])
         ], style={"padding": "0 40px"}),
-        
+
         html.Div([
             dcc.Graph(figure=fig_violin_price),
             dcc.Graph(figure=fig_violin_stars)

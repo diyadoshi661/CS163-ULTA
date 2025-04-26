@@ -6,11 +6,10 @@ app.config.suppress_callback_exceptions = True
 
 # Define custom page order
 custom_order = [
-    "Home Page",
-    "Project Proposal",
-    "Major Findings",
-    "Analytical Methods",
-    "Project Objective"
+    "Home",
+    "Proposals",
+    "Methodology",
+    "Predictions"
 ]
 
 # Splash screen layout
@@ -42,36 +41,35 @@ def splash_screen():
 
 # Main app layout
 def full_layout():
-    sorted_pages = sorted(dash.page_registry.values(), key=lambda p: custom_order.index(p['name']) if p['name'] in custom_order else 99)
+    sorted_pages = sorted(
+        dash.page_registry.values(),
+        key=lambda p: custom_order.index(p['name']) if p['name'] in custom_order else 99
+    )
     return html.Div([
         html.Div([
-            html.Div([
-                html.Span([
-                    dcc.Link(f"{page['name']} ", href=page["relative_path"],
-                             style={
-                                 "padding": "0 10px",
-                                 "text-decoration": "none",
-                                 "color": "#bbb",
-                                 "font-family": "Comic Sans MS, cursive, sans-serif"
-                             }),
-                    html.Span("|", style={"color": "#bbb"})
-                ]) for page in sorted_pages
+            html.Nav([
+                dcc.Link(f"{page['name']} ", href=page["relative_path"], style={
+                    "padding": "0 10px",
+                    "text-decoration": "none",
+                    "color": "#333",
+                    "font-family": "Comic Sans MS, cursive, sans-serif"
+                })
+                for page in sorted_pages
             ], style={
                 "display": "flex",
                 "justifyContent": "flex-end",
-                "padding": "0 20px",
-                "font-size": "1.1rem"
+                "gap": "20px",
+                "padding": "10px 30px",
+                "font-size": "1.2rem"
             }),
             html.Hr()
         ]),
-        dash.page_container  # ← this renders your current page
+        dash.page_container
     ])
 
-
-# Show splash screen first
+# Layout swapper
 app.layout = html.Div(id='root-layout', children=splash_screen())
 
-# Swap to main layout after timer
 @app.callback(
     Output('root-layout', 'children'),
     Input('splash-timer', 'n_intervals')
@@ -82,4 +80,4 @@ def update_to_main_layout(n):
     return dash.no_update
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False, use_reloader=False)
