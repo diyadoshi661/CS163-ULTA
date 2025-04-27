@@ -129,36 +129,44 @@ layout = html.Div(
             children="Analytical Methods"
         ),
 
-        # Cards
         html.Div([
-            html.Div([
-                html.H2("Data Preprocessing", style={"color": "#4B0082", "marginBottom": "10px"}),
-                html.P("Cleaning reviews, handling missing data, label encoding categorical features.", 
-                       style={"color": "#333", "fontSize": "1.2rem"})
-            ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "12px", "width": "500px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)"}),
+            html.P(
+                "In this project, data preprocessing and feature engineering played a foundational role. "
+                "We began by scraping Ulta Beauty product data and user reviews, ensuring the collection of relevant information. "
+                "Missing values were carefully handled to preserve data integrity, and full review texts were created by merging separate title and comment fields into cohesive, analyzable feedback. "
+                "To better capture user behavior and language patterns, we engineered several new features, including sentiment polarity, subjectivity scores, review length (both character and word counts), "
+                "punctuation usage patterns (such as excessive exclamation marks), and unique word ratio, which measures lexical diversity in a review."
+            )
+        ], style={"backgroundColor": "white", "padding": "25px", "borderRadius": "12px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)", "fontSize": "1.2rem", "color": "#333"}),
 
-            html.Div([
-                html.H2("Sentiment Analysis", style={"color": "#4B0082", "marginBottom": "10px"}),
-                html.P("VADER/TextBlob or DistilBERT", style={"color": "#333", "fontSize": "1.2rem"})
-            ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "12px", "width": "500px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)"}),
+        # Box 2 - NLP
+        html.Div([
+            html.P(
+                "For Natural Language Processing (NLP) tasks, we focused on understanding the emotional tone and reliability of reviews. "
+                "Sentiment analysis was conducted using the TextBlob library, enabling us to compute both sentiment polarity (positive or negative tone) and subjectivity (degree of opinionated language). "
+                "Reviews with a subjectivity score above 0.6 were labeled as 'biased,' recognizing that highly emotional reviews might distort product perceptions. "
+                "To further categorize review types, we applied KMeans clustering based on linguistic features such as review length, subjectivity, and verified buyer status, helping differentiate between genuine user feedback and potentially exaggerated or low-quality reviews."
+            )
+        ], style={"backgroundColor": "white", "padding": "25px", "borderRadius": "12px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)", "fontSize": "1.2rem", "color": "#333"}),
 
-            html.Div([
-                html.H2("Keyword Extraction", style={"color": "#4B0082", "marginBottom": "10px"}),
-                html.P("TF-IDF, KeyBERT", style={"color": "#333", "fontSize": "1.2rem"})
-            ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "12px", "width": "500px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)"}),
+        # Box 3 - Predictive Modeling
+        html.Div([
+            html.P(
+                "In the predictive modeling phase, we trained an XGBoost regression model to predict star ratings using engineered features like price, brand encoding, review count patterns, and recommendation ratios. "
+                "The model achieved strong predictive performance, with root mean squared error (RMSE) equals 0.2305 and mean absolute error (MAE) equals 0.1575, validating the strength of the chosen features. "
+                "To ensure model transparency, we utilized SHAP (SHapley Additive Explanations) to visualize how individual features influenced the model's predictions, revealing that factors like review volume, price, and brand affiliation significantly impacted predicted star ratings."
+            )
+        ], style={"backgroundColor": "white", "padding": "25px", "borderRadius": "12px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)", "fontSize": "1.2rem", "color": "#333"}),
 
-            html.Div([
-                html.H2("XGBoost Regression", style={"color": "#4B0082", "marginBottom": "10px"}),
-                html.P("Predicting star ratings", style={"color": "#333", "fontSize": "1.2rem"})
-            ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "12px", "width": "500px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)"}),
+        # Box 4 - Data Visualization
+        html.Div([
+            html.P(
+                "Lastly, data visualization was employed to bring these insights to life. "
+                "We created violin plots to depict the distribution of prices and weighted ratings across different product categories, radar charts to illustrate distinct clusters of review behavior, and SHAP summary plots to explain how features contributed to model decisions. "
+                "Additionally, we produced pricing evolution bar charts to monitor how brand strategies shifted over time, identifying brands that adopted premium positioning or competitive price-cutting tactics."
+            )
+        ], style={"backgroundColor": "white", "padding": "25px", "borderRadius": "12px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)", "fontSize": "1.2rem", "color": "#333"}),
 
-            html.Div([
-                html.H2("SHAP Explainability", style={"color": "#4B0082", "marginBottom": "10px"}),
-                html.P("Visualizing feature impacts", style={"color": "#333", "fontSize": "1.2rem"})
-            ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "12px", "width": "500px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)"}),
-
-        ], style={"display": "flex", "flexDirection": "column", "alignItems": "center"}),
-            html.Hr(),
 
         html.H3("Price Change Distribution"),
         dcc.Graph(figure=fig_price_change),
