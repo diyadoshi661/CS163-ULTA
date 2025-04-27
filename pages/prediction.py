@@ -1,7 +1,74 @@
 import dash
-from dash import html
-
+from dash import html, dcc, Input, Output
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.ensemble import RandomForestRegressor
+import plotly.express as px
+import numpy as np
 dash.register_page(__name__, path='/predictions', name='Predictions')
+
+# Load and prepare data
+df_old = pd.read_csv("cleaned_makeup_products.csv")
+
+# Data cleaning
+df = df_old.drop([
+    'product_link_id', 'product_link', 'item_id', 'description', 
+    'pros', 'cons', 'best_uses', 'describe_yourself', 
+    'native_sampling_review_count', 'faceoff_negative', 'faceoff_positive'
+], axis=1)
+
+df = df.dropna(subset=['average_rating'])
+df['brand'] = df['brand'].fillna('Unknown')
+df['category'] = df['category'].fillna('Unknown')
+
+for col in df.select_dtypes(include=['float64', 'int64']).columns:
+    df[col] = df[col].fillna(0)
+
+label_encoders = {}
+for col in ['brand', 'category', 'product_name']:
+    le = LabelEncoder()
+    df[col] = le.fit_transform(df[col])
+    label_encoders[col] = le
+
+X = df.drop('average_rating', axis=1)
+y = df['average_rating']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+model = RandomForestRegressor(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+
+# Prepare DataFrame for visualization
+results_df = pd.DataFrame({
+    'Actual Rating': y_test,
+    'Predicted Rating': y_pred
+})
+
+# Scatter plot: Actual vs Predicted
+fig1 = px.scatter(
+    results_df,
+    x='Actual Rating',
+    y='Predicted Rating',
+    title='Actual vs Predicted Product Ratings',
+    labels={'Actual Rating': 'Actual Rating', 'Predicted Rating': 'Predicted Rating'},
+    opacity=0.6
+)
+
+# Interactive prediction setup
+# We will let user adjust 'price' between min and max
+price_min = int(df['price'].min())
+price_max = int(df['price'].max())
+
+# Create sample data for different prices (other features are fixed at average values)
+def predict_for_prices(price_values):
+    input_df = pd.DataFrame(np.tile(X.mean().values, (len(price_values), 1)), columns=X.columns)
+    input_df['price'] = price_values
+    preds = model.predict(input_df)
+    return preds
+
 
 layout = html.Div(
     style={"backgroundColor": "#FFF9F4", "padding": "30px", "font-family": "Georgia, serif"},
@@ -53,5 +120,42 @@ layout = html.Div(
                 html.Li("XGBoost: Regression model for predicting star ratings", style={"fontSize": "1.2rem"})
             ])
         ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "12px", "width": "600px", "margin": "20px auto", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)"}),
-    ]
+        html.H3("Product Rating Prediction Visualization"),
+    
+        html.P("Graph 1: Scatter Plot of Actual vs Predicted Ratings"),
+        dcc.Graph(figure=fig1),
+
+        html.Hr(),
+
+        html.H4("Interactive: Predict Rating Based on Price"),
+
+        dcc.Slider(
+            id='price-slider',
+            min=price_min,
+            max=price_max,
+            step=1,
+            value=(price_min + price_max) // 2,  # start at mid price
+            marks={price_min: str(price_min), price_max: str(price_max)},
+            tooltip={"placement": "bottom", "always_visible": True}
+         ),
+
+        dcc.Graph(id='interactive-prediction-graph')
+])
+
+# Callback for interactive prediction
+@dash.callback(
+    Output('interactive-prediction-graph', 'figure'),
+    Input('price-slider', 'value')
 )
+def update_prediction(selected_price):
+    price_values = np.linspace(price_min, price_max, 100)
+    preds = predict_for_prices(price_values)
+
+    fig2 = px.line(
+        x=price_values,
+        y=preds,
+        labels={'x': 'Price', 'y': 'Predicted Rating'},
+        title=f"Predicted Rating vs Price (Selected Price: ${selected_price})"
+    )
+    fig2.add_vline(x=selected_price, line_dash="dash", line_color="red")
+    return fig2
