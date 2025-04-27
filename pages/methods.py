@@ -3,6 +3,9 @@ from dash import html, dcc
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
+import shap
+import numpy as np
+
 
 
 dash.register_page(__name__, path='/methods', name='Methodology')
@@ -120,6 +123,139 @@ fig_category_trends = px.scatter(
 fig_category_trends.add_vline(x=0, line_dash="dash", line_color="gray")
 fig_category_trends.add_hline(y=0, line_dash="dash", line_color="gray")
 
+# Radar chart for cluster behavior
+from math import pi
+
+# Cluster summary manually (or recompute if needed)
+cluster_summary = pd.DataFrame({
+    'char_count': [29.62, 346.90, 30.93],
+    'word_count': [5.17, 65.39, 5.20],
+    'subjectivity': [0.18, 0.57, 0.74],
+    'sentiment': [-0.004, 0.254, 0.644],
+    'unique_word_ratio': [0.993, 0.790, 0.992],
+    'is_verified_buyer': [0.015, 0.127, 0.025]
+}, index=['Cluster 0', 'Cluster 1', 'Cluster 2'])
+
+# Normalize
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+cluster_normalized = pd.DataFrame(
+    scaler.fit_transform(cluster_summary),
+    columns=cluster_summary.columns,
+    index=cluster_summary.index
+)
+
+# Radar chart prep
+features = list(cluster_normalized.columns)
+num_vars = len(features)
+angles = [n / float(num_vars) * 2 * pi for n in range(num_vars)]
+angles += angles[:1]  # close circle
+
+# Plotly Radar Chart
+fig_radar = go.Figure()
+
+for cluster in cluster_normalized.index:
+    values = cluster_normalized.loc[cluster].tolist()
+    values += values[:1]  # repeat first value to close loop
+    fig_radar.add_trace(go.Scatterpolar(
+        r=values,
+        theta=features + [features[0]],
+        fill='toself',
+        name=cluster
+    ))
+
+fig_radar.update_layout(
+    polar=dict(
+        radialaxis=dict(visible=True, range=[0, 1])
+    ),
+    title="Normalized Radar Chart: Cluster Behavior Comparison",
+    showlegend=True
+)
+
+
+# Predict (optional if you want)
+# preds = model.predict(X_test)
+
+from xgboost import XGBRegressor
+from sklearn.model_selection import train_test_split
+
+features_to_keep = [
+    'price', 
+    'brand',
+    'rating',
+    'num_shades', 
+    'num_reviews', 
+    'review_star_1', 
+    'review_star_2', 
+    'review_star_3', 
+    'review_star_4', 
+    'review_star_5',
+    'native_review_count', 
+    'syndicated_review_count'
+]
+
+# Create a new DataFrame with only the selected features
+dfxg = df_old[features_to_keep].copy()
+# Prepare X and y for model
+dfxg = dfxg.dropna(subset=["rating"])
+dfxg['Brand_encoded'] = pd.factorize(dfxg['brand'])[0]
+X = dfxg[['price', 
+    'Brand_encoded',
+    'num_shades', 
+    'num_reviews', 
+    'review_star_1', 
+    'review_star_2', 
+    'review_star_3', 
+    'review_star_4', 
+    'review_star_5',
+    'native_review_count', 
+    'syndicated_review_count']]
+y = dfxg["rating"]
+
+# Split into training and testing
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train the model
+model = XGBRegressor()
+model.fit(X_train, y_train)
+
+# Now model is trained and available!
+
+# SHAP Explainability
+explainer = shap.TreeExplainer(model)
+shap_values = explainer.shap_values(X_test)
+
+explainer = shap.TreeExplainer(model)
+
+# 2. Compute SHAP values on the test set
+shap_values = explainer.shap_values(X_test)
+
+# 3. SHAP Summary Plot (Scatter version)
+fig_shap_summary = go.Figure()
+shap.summary_plot(shap_values, X_test, show=False)  # Generate but don't show (for plotly)
+
+fig_shap_summary = px.scatter(
+    x=shap_values.flatten(), 
+    y=np.repeat(X_test.columns, shap_values.shape[0]),
+    labels={"x": "SHAP Value", "y": "Feature"},
+    title="SHAP Summary Plot (Feature Impact)",
+)
+
+# 4. SHAP Bar Plot (Mean Absolute SHAP Value per Feature)
+shap_bar = np.abs(shap_values).mean(axis=0)
+shap_bar_df = pd.DataFrame({
+    "Feature": X_test.columns,
+    "Mean_SHAP_Abs": shap_bar
+}).sort_values(by="Mean_SHAP_Abs", ascending=True)  # Sort small to large for bar
+
+fig_shap_bar = px.bar(
+    shap_bar_df,
+    x="Mean_SHAP_Abs",
+    y="Feature",
+    orientation="h",
+    title="Mean Absolute SHAP Value by Feature",
+    labels={"Mean_SHAP_Abs": "Average Impact", "Feature": "Feature"}
+)
 
 layout = html.Div(
     style={"backgroundColor": "#FFF9F4", "padding": "30px", "font-family": "Georgia, serif"},
@@ -139,15 +275,23 @@ layout = html.Div(
             )
         ], style={"backgroundColor": "white", "padding": "25px", "borderRadius": "12px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)", "fontSize": "1.2rem", "color": "#333"}),
 
-        # Box 2 - NLP
-        html.Div([
-            html.P(
-                "For Natural Language Processing (NLP) tasks, we focused on understanding the emotional tone and reliability of reviews. "
-                "Sentiment analysis was conducted using the TextBlob library, enabling us to compute both sentiment polarity (positive or negative tone) and subjectivity (degree of opinionated language). "
-                "Reviews with a subjectivity score above 0.6 were labeled as 'biased,' recognizing that highly emotional reviews might distort product perceptions. "
-                "To further categorize review types, we applied KMeans clustering based on linguistic features such as review length, subjectivity, and verified buyer status, helping differentiate between genuine user feedback and potentially exaggerated or low-quality reviews."
-            )
-        ], style={"backgroundColor": "white", "padding": "25px", "borderRadius": "12px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)", "fontSize": "1.2rem", "color": "#333"}),
+html.H3("Cluster Behavior Radar Chart", style={"textAlign": "center", "marginTop": "20px"}),
+dcc.Graph(figure=fig_radar),        # Box 2 - NLP
+html.Div([
+    html.P(
+        "For Natural Language Processing (NLP) tasks, we focused on understanding the emotional tone and reliability of reviews. "
+        "Sentiment analysis was conducted using the TextBlob library, enabling us to compute both sentiment polarity (positive or negative tone) and subjectivity (degree of opinionated language). "
+        "Reviews with a subjectivity score above 0.6 were labeled as 'biased,' recognizing that highly emotional reviews might distort product perceptions. "
+        "To further categorize review types, we applied KMeans clustering based on linguistic features such as review length, subjectivity, and verified buyer status, helping differentiate between genuine user feedback and potentially exaggerated or low-quality reviews."
+    )
+], style={"backgroundColor": "white", "padding": "25px", "borderRadius": "12px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)", "fontSize": "1.2rem", "color": "#333"}),
+
+html.H3("SHAP Summary Plot (Feature Impact)", style={"textAlign": "center", "marginTop": "30px"}),
+dcc.Graph(figure=fig_shap_summary),
+
+html.H3("Mean Absolute SHAP Value (Feature Importance)", style={"textAlign": "center", "marginTop": "30px"}),
+dcc.Graph(figure=fig_shap_bar),
+
 
         # Box 3 - Predictive Modeling
         html.Div([
