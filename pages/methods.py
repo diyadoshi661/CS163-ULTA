@@ -168,4 +168,5 @@ layout = html.Div(
 
         html.H3("Category Dynamics: Growth and Ratings"),
         dcc.Graph(figure=fig_category_trends),
+
     ])
