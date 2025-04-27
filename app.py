@@ -7,7 +7,7 @@ app.config.suppress_callback_exceptions = True
 # Define custom page order
 custom_order = [
     "Home",
-    "Proposals",
+    "Proposal",
     "Methodology",
     "Predictions"
 ]

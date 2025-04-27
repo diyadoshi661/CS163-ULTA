@@ -2,7 +2,7 @@ import dash
 from dash import html
 
 # Register the page
-dash.register_page(__name__, path='/proposal', name='Project Proposal')
+dash.register_page(__name__, path='/proposal', name='Proposal')
 
 layout = html.Div(
     style={"backgroundColor": "#FFF9F4", "padding": "30px"},
