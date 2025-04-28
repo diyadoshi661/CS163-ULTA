@@ -2,6 +2,11 @@ runtime: python310
 automatic_scaling:
   target_cpu_utilization: 0.90
   max_instances: 1
-entrypoint: gunicorn -b :8080 app:server
+entrypoint: gunicorn -b :$PORT app:server
 env_variables:
   BUCKET_NAME: 'ulta-dash-app.appspot.com'
+handlers:
+  - url: /data
+    static_dir: data
+  - url: /.*
+    script: auto

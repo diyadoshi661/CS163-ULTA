@@ -11,8 +11,8 @@ import numpy as np
 dash.register_page(__name__, path='/methods', name='Methodology')
 
 # Load and process the datasets
-df_old = pd.read_csv("cleaned_makeup_products.csv")
-df_new = pd.read_csv("face_df.csv")
+df_old = pd.read_csv("data/cleaned_makeup_products.csv")
+df_new = pd.read_csv("data/face_df.csv")
 
 # Clean and match
 df_old['product_name'] = df_old['product_name'].astype(str).str.lower().str.strip()
