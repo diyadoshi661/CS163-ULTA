@@ -1,0 +1,20 @@
+# Ignore the virtual environment
+venv/
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore Mac system files
+.DS_Store
+
+# Ignore local environment variables
+.env/
+
+# Ignore git stuff (optional, but usually good)
+.git
+.gitignore
+
+# Other setup files (optional)
+setup.cfg
