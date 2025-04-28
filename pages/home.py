@@ -9,27 +9,60 @@ dash.register_page(__name__, path='/', name='Home')
 df_old = pd.read_csv('cleaned_makeup_products.csv')
 df_new = pd.read_csv('face_df.csv')
 
-# Data Preprocessing
-old_top_brands = df_old['brand'].value_counts().nlargest(10).reset_index()
-old_top_brands.columns = ['Brand', 'Product Count']
-new_top_brands = df_new['Brand'].value_counts().nlargest(10).reset_index()
-new_top_brands.columns = ['Brand', 'Product Count']
+# New brands per category
+old_category_brands = df_old.groupby('category')['brand'].unique().apply(set)
+new_category_brands = df_new.groupby('Category')['Brand'].unique().apply(set)
 
-price_comparison = pd.DataFrame({
-    'Dataset': ['Old', 'New'],
-    'Average Price': [df_old['price'].mean(), df_new['Price'].mean()]
-})
+new_brands_per_category = {}
+for category in new_category_brands.index:
+    old_brands = old_category_brands.get(category, set())
+    new_brands = new_category_brands.get(category, set())
+    added_brands = new_brands - old_brands
+    new_brands_per_category[category] = len(added_brands)
 
-review_comparison = pd.DataFrame({
-    'Dataset': ['Old', 'New'],
-    'Average Reviews': [df_old['num_reviews'].mean(), df_new['Reviews'].mean()]
-})
+new_brands_df = pd.DataFrame(list(new_brands_per_category.items()), columns=['Category', 'New Brands Count'])
+new_brands_df = new_brands_df.sort_values(by='New Brands Count', ascending=False)
 
-# Visualizations
-fig_top_old = px.bar(old_top_brands, x='Brand', y='Product Count', title='Top 10 Hottest Brands (Old Data)')
-fig_top_new = px.bar(new_top_brands, x='Brand', y='Product Count', title='Top 10 Hottest Brands (New Data)')
-fig_price = px.bar(price_comparison, x='Dataset', y='Average Price', title='Average Price Comparison')
-fig_reviews = px.bar(review_comparison, x='Dataset', y='Average Reviews', title='Average Review Count Comparison')
+# New products per brand
+old_brand_products = df_old.groupby('brand')['product_name'].unique().apply(set)
+new_brand_products = df_new.groupby('Brand')['Product Name'].unique().apply(set)
+
+new_products_per_brand = {}
+for brand in new_brand_products.index:
+    old_products = old_brand_products.get(brand, set())
+    new_products = new_brand_products.get(brand, set())
+    added_products = new_products - old_products
+    new_products_per_brand[brand] = len(added_products)
+
+new_products_df = pd.DataFrame(list(new_products_per_brand.items()), columns=['Brand', 'New Products Count'])
+new_products_df = new_products_df.sort_values(by='New Products Count', ascending=False)
+
+# New brands growth chart
+fig_new_brands = px.bar(new_brands_df.head(10),
+                        x='New Brands Count', y='Category', orientation='h',
+                        title='Top 10 Categories with New Brands',
+                        color='New Brands Count',
+                        color_continuous_scale='Teal',
+                        template='plotly_white')
+fig_new_brands.update_layout(yaxis={'categoryorder':'total ascending'})
+
+# New products growth chart
+fig_new_products = px.bar(new_products_df.head(10),
+                          x='New Products Count', y='Brand', orientation='h',
+                          title='Top 10 Brands with New Products',
+                          color='New Products Count',
+                          color_continuous_scale='Sunset',
+                          template='plotly_white')
+fig_new_products.update_layout(yaxis={'categoryorder':'total ascending'})
+
+
+# Rating vs Reviews Heatmap (Scatter)
+fig_rating_reviews = px.scatter(df_new, x='Stars', y='Reviews', size='Price', color='Category',
+                                title='Product Reviews vs Ratings by Category', hover_name='Product Name', size_max=15)
+
+# Top 10 Most Popular Products by Reviews
+fig_top_products = px.bar(df_new.sort_values('Reviews', ascending=False).head(10),
+                          x='Product Name', y='Reviews', color='Brand', title='Top 10 Most Reviewed Products')
 
 fig_violin_price = px.violin(
     df_new, x="Category", y="Price", box=True, points="all", color="Category", title="Price Distribution Across Categories"
@@ -116,13 +149,13 @@ layout = html.Div(
 ),
 
             html.Div([
-                html.Div([dcc.Graph(figure=fig_top_old)], style={"width": "48%", "display": "inline-block", "padding": "1%"}),
-                html.Div([dcc.Graph(figure=fig_top_new)], style={"width": "48%", "display": "inline-block", "padding": "1%"})
+                html.Div([dcc.Graph(figure=fig_new_brands)], ),
+                html.Div([dcc.Graph(figure=fig_new_products)], )
             ]),
 
             html.Div([
-                html.Div([dcc.Graph(figure=fig_price)], style={"width": "48%", "display": "inline-block", "padding": "1%"}),
-                html.Div([dcc.Graph(figure=fig_reviews)], style={"width": "48%", "display": "inline-block", "padding": "1%"})
+                html.Div([dcc.Graph(figure=fig_rating_reviews)], ),
+                html.Div([dcc.Graph(figure=fig_top_products)], )
             ])
         ], style={"padding": "0 40px"}),
 

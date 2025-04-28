@@ -314,11 +314,41 @@ dcc.Graph(figure=fig_shap_bar),
 
         html.H3("Price Change Distribution"),
         dcc.Graph(figure=fig_price_change),
+        html.Div([
+            html.P(
+                "By analyzing how brands adjusted their product prices over an 8-month period by matching items"
+                "between the old and new datasets. We calculated the average price change per brand"
+                "(except new brand doesn't have record from the old dataset) and categorized brands"
+                "as having increased, decreased, or maintained their pricing.")
+        ], style={"backgroundColor": "white", "padding": "25px", "borderRadius": "12px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)", "fontSize": "1.2rem", "color": "#333"}),
+
 
         html.H3("Brand Pricing Strategy Shifts"),
         dcc.Graph(figure=fig_brand_trends),
+        html.Div([
+            html.P(
+                "The insignt that we found for Some brands significantly increased average prices (e.g.,  like Juvia's place or Kylie costometics)."
+                "Others decreased their prices, suggesting a more competitive strategy(e.g., Exa, revolution beauty)."
+                "Several brands maintained stable pricing, indicating consistency in market positioning.(e.g., wyn beauty, morphe 2). "
+                "For some products with large price fluctuations, we can selectively compare them with their rating trends and study " 
+                "the relationship between them, and thereby formulate targeted price plans and the optimal selection of product supply volumes for the products."
+                "Understanding pricing evolution helps applying discounting strategies, and supports strategic brand positioning decisions across product tiers.")
+        ], style={"backgroundColor": "white", "padding": "25px", "borderRadius": "12px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)", "fontSize": "1.2rem", "color": "#333"}),
+
+
 
         html.H3("Category Dynamics: Growth and Ratings"),
         dcc.Graph(figure=fig_category_trends),
+        html.Div([
+            html.P(
+                "We evaluated category-wise shifts by comparing changes in product count,"
+                " average rating, and total reviews across time. Categories were then labeled"
+                " as HOT, COLD, or MIXED based on growth trends. HOT categories showed increases"
+                "in product listings, ratings, and reviews and COLD categories decline in all three areas." 
+                "This analysis will provide a strategic plan for product selection, helps prioritize resource allocation."
+                )
+
+        ], style={"backgroundColor": "white", "padding": "25px", "borderRadius": "12px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)", "fontSize": "1.2rem", "color": "#333"}),
+
 
     ])

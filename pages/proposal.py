@@ -92,7 +92,8 @@ html.Hr(style={"borderTop": "2px solid #bfa2db"}),
             html.Ul([
                 html.Li("Sentiment and Subjectivity Scoring", style={"marginBottom": "8px"}),
                 html.Li("Cluster Analysis for Bias Detection", style={"marginBottom": "8px"}),
-                html.Li("XGBoost Modeling and SHAP Analysis")
+                html.Li("XGBoost Modeling and SHAP Analysis"),
+                html.Li("Random Forest Regression Model for Product Rating Prediction")
             ], style={"fontSize": "18px", "color": "#333"})
         ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "10px", "marginBottom": "20px"}),
 
@@ -104,7 +105,9 @@ html.Hr(style={"borderTop": "2px solid #bfa2db"}),
             html.Ul([
                 html.Li("Violin plots for price and rating distributions", style={"marginBottom": "8px"}),
                 html.Li("Radar charts for review behavior clustering", style={"marginBottom": "8px"}),
-                html.Li("SHAP summary plots for explainability")
+                html.Li("SHAP summary plots for explainability"),
+                html.Li(" a scatter plot comparing actual vs predicted ratings, demonstrating the model’s predictive ability."),
+                html.Li("Enabled users to adjust the price using a slider and observe how the predicted rating changes, based on the model's learned patterns.")
             ], style={"fontSize": "18px", "color": "#333"})
         ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "10px", "marginBottom": "40px"}),
     ]

@@ -98,36 +98,25 @@ layout = html.Div(
 
         # Project Summary Card
         html.Div([
-            html.H2("Project Summary", style={"color": "#4B0082", "marginBottom": "10px"}),
-            html.P("This section demonstrates how machine learning models are applied to predict ratings "
-                   "and identify key factors influencing star scores.",
+            html.H2("Summary", style={"color": "#4B0082", "marginBottom": "10px"}),
+            html.P("In this project, we developed a Random Forest Regressor "
+                   "to predict average product ratings based on various product"
+                    " attributes from a cleaned beauty product dataset."
+                    "The goal was to explore whether structured features like price,"
+                     " brand, and category could effectively forecast user ratings. ",
                    style={"color": "#333", "fontSize": "1.2rem"})
         ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "12px", "width": "600px", "margin": "20px auto", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)"}),
 
         # Data Sources Card
-        html.Div([
-            html.H2("Data Sources", style={"color": "#4B0082", "marginBottom": "10px"}),
-            html.Ul([
-                html.Li("XGBoost: Regression model for predicting star ratings", style={"fontSize": "1.2rem"}),
-                html.Li("SHAP: Explaining what features drive favorable ratings", style={"fontSize": "1.2rem"})
-            ])
-        ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "12px", "width": "600px", "margin": "20px auto", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)"}),
-
-        # Expected Major Findings Card
-        html.Div([
-            html.H2("Expected Major Findings", style={"color": "#4B0082", "marginBottom": "10px"}),
-            html.Ul([
-                html.Li("XGBoost: Regression model for predicting star ratings", style={"fontSize": "1.2rem"})
-            ])
-        ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "12px", "width": "600px", "margin": "20px auto", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)"}),
+       
         html.H3("Product Rating Prediction Visualization"),
     
-        html.P("Graph 1: Scatter Plot of Actual vs Predicted Ratings"),
+      #  html.P("Graph 1: Scatter Plot of Actual vs Predicted Ratings"),
         dcc.Graph(figure=fig1),
 
         html.Hr(),
 
-        html.H4("Interactive: Predict Rating Based on Price"),
+        html.H4("Predict Rating Based on Price"),
 
         dcc.Slider(
             id='price-slider',
