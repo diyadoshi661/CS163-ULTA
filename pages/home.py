@@ -6,8 +6,8 @@ import plotly.express as px
 dash.register_page(__name__, path='/', name='Home')
 
 # Load datasets
-df_old = pd.read_csv('data/cleaned_makeup_products.csv')
-df_new = pd.read_csv('data/face_df.csv')
+df_old = pd.read_csv('cleaned_makeup_products.csv')
+df_new = pd.read_csv('face_df.csv')
 
 # New brands per category
 old_category_brands = df_old.groupby('category')['brand'].unique().apply(set)
