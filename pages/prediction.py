@@ -1,6 +1,7 @@
 import dash
 from dash import html, dcc, Input, Output
 import pandas as pd
+import os
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestRegressor
@@ -8,8 +9,12 @@ import plotly.express as px
 import numpy as np
 dash.register_page(__name__, path='/predictions', name='Predictions')
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+csv_dir = os.path.join(BASE_DIR,'..', 'data')
+
 # Load and prepare data
-df_old = pd.read_csv("cleaned_makeup_products.csv")
+csv_path = os.path.join(csv_dir, 'cleaned_makeup_products.csv')
+df_old = pd.read_csv(csv_path)
 
 # Data cleaning
 df = df_old.drop([
@@ -24,6 +29,11 @@ df['category'] = df['category'].fillna('Unknown')
 
 for col in df.select_dtypes(include=['float64', 'int64']).columns:
     df[col] = df[col].fillna(0)
+# Remove string versions of NaN
+df['product_name'] = df['product_name'].astype(str)
+df['product_name'] = df['product_name'].str.replace(r'^nan\s+', '', regex=True).replace('nan', '')
+df['product_name'] = df['product_name'].replace('', 'Unknown')
+
 
 label_encoders = {}
 for col in ['brand', 'category', 'product_name']:

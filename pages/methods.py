@@ -5,14 +5,19 @@ import plotly.graph_objects as go
 import pandas as pd
 import shap
 import numpy as np
-
-
+import os
 
 dash.register_page(__name__, path='/methods', name='Methodology')
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+csv_dir = os.path.join(BASE_DIR,'..', 'data')
+
 # Load and process the datasets
-df_old = pd.read_csv("cleaned_makeup_products.csv")
-df_new = pd.read_csv("face_df.csv")
+csv_path = os.path.join(csv_dir, 'cleaned_makeup_products.csv')
+df_old = pd.read_csv(csv_path)
+
+csv_path1 = os.path.join(csv_dir, 'face_df.csv')
+df_new = pd.read_csv(csv_path1)
 
 # Clean and match
 df_old['product_name'] = df_old['product_name'].astype(str).str.lower().str.strip()
