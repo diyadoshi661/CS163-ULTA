@@ -108,7 +108,7 @@ layout = html.Div(
 
         # Project Summary Card
         html.Div([
-            html.H2("Summary", style={"color": "#4B0082", "marginBottom": "10px"}),
+            html.H2("Goal", style={"color": "#4B0082", "marginBottom": "10px"}),
             html.P("With the question in mind: Can we predict the rating according to price? " \
             "what is the best price we should set up for basic products? " \
             "In this project, we developed a Random Forest Regressor "
@@ -140,13 +140,43 @@ layout = html.Div(
          ),
 
         dcc.Graph(id='interactive-prediction-graph'),
-        html.P("With the question in mind: Can we predict the rating according to price? " \
-            "what is the best price we should set up for basic products? " \
-            "In this project, we developed a Random Forest Regressor "
-                   "to predict average product ratings based on the average product price. "
-                    "The goal was to explore whether structured features like price,"
-                     " could effectively forecast user ratings. ",
-                   style={"color": "#333", "fontSize": "1.2rem"})
+        html.P("As we can see from the graph, predicted ratings increase slightly as price increases" \
+        ", but the change is marginal. The rating does not increase linearly with price-plateaus and " \
+        "jumps suggest price sensitivity zones. ",style={"color": "#333", "fontSize": "1.6rem"}),
+        html.Div([
+        html.H4(" Business Strategy Recommendations", style={"marginBottom": "20px"}),
+
+        html.P("1. Price Optimization\n"
+           "• Sweet Spot Zone: Price points between $30–$50 slightly increase perceived product rating.\n"
+           "• High-End Saturation: Pricing above $50 doesn't provide much improvement in predicted rating. (" \
+           "That way we can focus on differentiators like luxury packaging or exclusive branding instead."),
+
+    html.P("2. Value Perception Campaigns\n"
+           "• Since rating does slightly increase with price, position slightly more expensive items as premium-quality, we can also use marketing method to enhance perceived value.\n"
+           "• Consider A/B testing campaigns around $29 vs $45 product tiers."),
+
+    html.P("3.  Targeted Promotions\n"
+           "• For products priced below $10, consider bundling or upselling — these are associated with the lowest predicted ratings, potentially perceived as “cheap” or lower quality."),
+
+    html.P("4. Product Line Segmentation\n"
+           "• Entry-level (< $15): Emphasize affordability, everyday use.\n"
+           "• Core tier ($30–$50): Your main offering, aligned with highest predicted ratings.\n"
+           "• Prestige tier ($50+): Justify the price with influencer partnerships, packaging, or exclusivity — " \
+           "that's why ratings likely won’t rise much, so non-rating perks must be visible."),
+
+
+    
+], style={
+    "backgroundColor": "white",
+    "padding": "25px",
+    "borderRadius": "12px",
+    "marginBottom": "20px",
+    "boxShadow": "0 4px 8px rgba(0,0,0,0.1)",
+    "fontSize": "1.1rem",
+    "color": "#333",
+    "lineHeight": "1.8"
+})
+
         
 ])
 
