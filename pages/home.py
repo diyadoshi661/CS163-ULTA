@@ -156,19 +156,49 @@ layout = html.Div(
 ),
 
             html.Div([
-                html.Div([dcc.Graph(figure=fig_new_brands)], ),
-                html.Div([dcc.Graph(figure=fig_new_products)], )
+                html.Div([
+                    html.P("By scraping the real time data from ULTA website," \
+                    "We compared with the dataset from 8 months ago, the first thing " \
+                    "we want to know about is how many new brands and products have " \
+                    "been put on the market. "),
+                    dcc.Graph(figure=fig_new_brands)],
+                    style={"backgroundColor": "white", "padding": "25px", "borderRadius": "12px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)", "fontSize": "1.2rem", "color": "#333"}),
+                html.Div([dcc.Graph(figure=fig_new_products)],)
+                    
             ]),
 
             html.Div([
-                html.Div([dcc.Graph(figure=fig_rating_reviews)], ),
-                html.Div([dcc.Graph(figure=fig_top_products)], )
+                html.Div([
+                    html.P("The second thing we want to know is the current reviews " \
+                    "and ratings for each category and most popular products. "),
+ 
+                    dcc.Graph(figure=fig_rating_reviews)],
+                    style={"backgroundColor": "white", "padding": "25px", "borderRadius": "12px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)", "fontSize": "1.2rem", "color": "#333"}), 
+                html.Div([                  
+                    html.P("As we can see, Concealer has a huge amounts of reviews compare" \
+                    " to other categories. The rating for concealer is also above average." \
+                    " Look at the most popular products, Tarte draw our attention. Tarte has " \
+                    "the most reviews with product name 'Shape Tape Concealer', and this brand " \
+                    "showed up in our previous analysis. "),
+
+                    dcc.Graph(figure=fig_top_products),
+                    html.P("Business is smart, they know to increase the quantaty of products" \
+                    "when there's a good trend. Base on that, if we could dive into the data and " \
+                    "take a close look at each related relationship between each feature and " \
+                    "analyze them, that will be a huge help to the development of business. ")],
+                    style={"backgroundColor": "white", "padding": "25px", "borderRadius": "12px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)", "fontSize": "1.2rem", "color": "#333"}),
+
             ])
         ], style={"padding": "0 40px"}),
 
         html.Div([
+            html.P("How can we inspect these features and predict future trends?" \
+            " Let's have a product performance analysis:" \
+            " below are the price and weighted rating distribution for each category"),
             dcc.Graph(figure=fig_violin_price),
             dcc.Graph(figure=fig_violin_stars)
-        ], style={"padding": "0 40px"})
+        ], 
+        style={"backgroundColor": "white", "padding": "25px", "borderRadius": "12px", "marginBottom": "20px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)", "fontSize": "1.2rem", "color": "#333"})
     ]
 )
+

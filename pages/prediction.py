@@ -109,11 +109,12 @@ layout = html.Div(
         # Project Summary Card
         html.Div([
             html.H2("Summary", style={"color": "#4B0082", "marginBottom": "10px"}),
-            html.P("In this project, we developed a Random Forest Regressor "
-                   "to predict average product ratings based on various product"
-                    " attributes from a cleaned beauty product dataset."
+            html.P("With the question in mind: Can we predict the rating according to price? " \
+            "what is the best price we should set up for basic products? " \
+            "In this project, we developed a Random Forest Regressor "
+                   "to predict average product ratings based on the average product price. "
                     "The goal was to explore whether structured features like price,"
-                     " brand, and category could effectively forecast user ratings. ",
+                     " could effectively forecast user ratings. ",
                    style={"color": "#333", "fontSize": "1.2rem"})
         ], style={"backgroundColor": "white", "padding": "20px", "borderRadius": "12px", "width": "600px", "margin": "20px auto", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)"}),
 
@@ -121,7 +122,7 @@ layout = html.Div(
        
         html.H3("Product Rating Prediction Visualization"),
     
-      #  html.P("Graph 1: Scatter Plot of Actual vs Predicted Ratings"),
+        html.P("This scatter plot (Actual vs Predicted Ratings) visualize the accuracy of prediction"),
         dcc.Graph(figure=fig1),
 
         html.Hr(),
@@ -138,7 +139,15 @@ layout = html.Div(
             tooltip={"placement": "bottom", "always_visible": True}
          ),
 
-        dcc.Graph(id='interactive-prediction-graph')
+        dcc.Graph(id='interactive-prediction-graph'),
+        html.P("With the question in mind: Can we predict the rating according to price? " \
+            "what is the best price we should set up for basic products? " \
+            "In this project, we developed a Random Forest Regressor "
+                   "to predict average product ratings based on the average product price. "
+                    "The goal was to explore whether structured features like price,"
+                     " could effectively forecast user ratings. ",
+                   style={"color": "#333", "fontSize": "1.2rem"})
+        
 ])
 
 # Callback for interactive prediction
