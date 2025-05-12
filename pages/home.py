@@ -3,18 +3,13 @@ from dash import html, dcc
 import pandas as pd
 import plotly.express as px
 import os
+from fetch import get_cleaned_makeup_products, get_face_df
+
+df_old = get_cleaned_makeup_products()
+df_new = get_face_df()
+
 
 dash.register_page(__name__, path='/', name='Home')
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-csv_dir = os.path.join(BASE_DIR,'..', 'data')
-
-# Load and process the datasets
-csv_path = os.path.join(csv_dir, 'cleaned_makeup_products.csv')
-df_old = pd.read_csv(csv_path)
-
-csv_path1 = os.path.join(csv_dir, 'face_df.csv')
-df_new = pd.read_csv(csv_path1)
 
 # New brands per category
 old_category_brands = df_old.groupby('category')['brand'].unique().apply(set)

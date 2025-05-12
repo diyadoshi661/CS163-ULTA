@@ -1,6 +1,7 @@
 import dash
 from dash import html
 
+
 # Register the page
 dash.register_page(__name__, path='/proposal', name='Proposal')
 

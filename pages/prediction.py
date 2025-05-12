@@ -7,14 +7,12 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestRegressor
 import plotly.express as px
 import numpy as np
+from fetch import get_cleaned_makeup_products, get_face_df
+
+df_old = get_cleaned_makeup_products()
+df_new = get_face_df()
+
 dash.register_page(__name__, path='/predictions', name='Predictions')
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-csv_dir = os.path.join(BASE_DIR,'..', 'data')
-
-# Load and prepare data
-csv_path = os.path.join(csv_dir, 'cleaned_makeup_products.csv')
-df_old = pd.read_csv(csv_path)
 
 # Data cleaning
 df = df_old.drop([
